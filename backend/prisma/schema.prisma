@@ -1,0 +1,89 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id             String          @id @default(uuid())
+  name           String
+  email          String          @unique
+  mobile         String
+  passwordHash   String
+  role           String          @default("USER") // USER | ADMIN
+  dateOfBirth    String?
+  gender         String?
+  profilePhoto   String?
+  isActive       Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  medicalProfile MedicalProfile?
+  qrProfile      QRProfile?
+  consents       Consent[]
+}
+
+model MedicalProfile {
+  id                            String   @id @default(uuid())
+  userId                        String   @unique
+  user                          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bloodGroup                    String
+  rhFactor                      String?
+  address                       String?
+  allergies                     String?
+  medicalConditions             String?
+  chronicDiseases               String?
+  previousSurgeries             String?
+  currentMedications            String?
+  previousMedications           String?
+  disabilityInfo                String?
+  emergencyContactName          String
+  emergencyContactNumber        String
+  emergencyContactRelationship  String
+  preferredHospital             String?
+  primaryDoctor                 String?
+  doctorContact                 String?
+  height                        String?
+  weight                        String?
+  smokingStatus                 String?
+  alcoholStatus                 String?
+  organDonorStatus              String?
+  insuranceProvider             String?
+  insurancePolicyNumber         String?
+  additionalNotes               String?
+  createdAt                     DateTime @default(now())
+  updatedAt                     DateTime @updatedAt
+}
+
+model QRProfile {
+  id          String      @id @default(uuid())
+  userId      String      @unique
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  secureToken String      @unique
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  accessLogs  AccessLog[]
+}
+
+model AccessLog {
+  id          String    @id @default(uuid())
+  qrProfileId String
+  qrProfile   QRProfile @relation(fields: [qrProfileId], references: [id], onDelete: Cascade)
+  accessedAt  DateTime  @default(now())
+  userAgent   String?
+  accessType  String    @default("QR_SCAN")
+  ipAddress   String?
+  metadata    String?
+}
+
+model Consent {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  consentType String   @default("EMERGENCY_QR_SHARING")
+  accepted    Boolean  @default(true)
+  acceptedAt  DateTime @default(now())
+}
