@@ -25,13 +25,17 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
+      const frontendEnv = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/+$/, '') : null;
       const isAllowed =
         origin.includes('localhost') ||
         origin.includes('127.0.0.1') ||
         origin.startsWith('http://192.168.') ||
         origin.startsWith('http://10.') ||
         origin.startsWith('http://172.') ||
-        (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL);
+        (frontendEnv && origin === frontendEnv) ||
+        origin.endsWith('.vercel.app') ||
+        origin.endsWith('.netlify.app') ||
+        origin.endsWith('.onrender.com');
       if (isAllowed || process.env.NODE_ENV !== 'production') {
         return callback(null, true);
       }
