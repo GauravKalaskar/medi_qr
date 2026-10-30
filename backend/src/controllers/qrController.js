@@ -1,10 +1,28 @@
+const os = require('os');
 const { prisma, FRONTEND_URL } = require('../config/env');
 const { generateSecureQRToken } = require('../utils/token');
+
+const getLocalIp = () => {
+  try {
+    const nets = os.networkInterfaces();
+    for (const name of Object.keys(nets)) {
+      for (const net of nets[name]) {
+        if (net.family === 'IPv4' && !net.internal) {
+          return net.address;
+        }
+      }
+    }
+  } catch (err) {
+    console.error('Failed to get local IP:', err);
+  }
+  return null;
+};
 
 // Get User's Active QR Profile
 const getMyQR = async (req, res, next) => {
   try {
     const userId = req.user.id;
+    const localIp = getLocalIp();
 
     const qrProfile = await prisma.qRProfile.findUnique({
       where: { userId },
@@ -32,10 +50,12 @@ const getMyQR = async (req, res, next) => {
         hasQR: false,
         qrProfile: null,
         medicalProfile,
+        localIp,
       });
     }
 
     const publicUrl = `${FRONTEND_URL}/medical/${qrProfile.secureToken}`;
+    const networkUrl = localIp ? `http://${localIp}:5173/medical/${qrProfile.secureToken}` : publicUrl;
 
     return res.json({
       success: true,
@@ -47,10 +67,14 @@ const getMyQR = async (req, res, next) => {
         createdAt: qrProfile.createdAt,
         updatedAt: qrProfile.updatedAt,
         publicUrl,
+        networkUrl,
+        localIp,
       },
       patientName: qrProfile.user.name,
       bloodGroup: medicalProfile ? `${medicalProfile.bloodGroup} ${medicalProfile.rhFactor || ''}` : 'Not Specified',
       lastProfileUpdate: medicalProfile?.updatedAt || qrProfile.updatedAt,
+      localIp,
+      networkUrl,
     });
   } catch (error) {
     next(error);
@@ -71,13 +95,18 @@ const generateQR = async (req, res, next) => {
       });
     }
 
+    const localIp = getLocalIp();
     const existingQR = await prisma.qRProfile.findUnique({ where: { userId } });
     if (existingQR) {
+      const publicUrl = `${FRONTEND_URL}/medical/${existingQR.secureToken}`;
+      const networkUrl = localIp ? `http://${localIp}:5173/medical/${existingQR.secureToken}` : publicUrl;
       return res.json({
         success: true,
         message: 'QR profile already exists.',
         qrProfile: existingQR,
-        publicUrl: `${FRONTEND_URL}/medical/${existingQR.secureToken}`,
+        publicUrl,
+        networkUrl,
+        localIp,
       });
     }
 
@@ -90,11 +119,16 @@ const generateQR = async (req, res, next) => {
       },
     });
 
+    const publicUrl = `${FRONTEND_URL}/medical/${qrProfile.secureToken}`;
+    const networkUrl = localIp ? `http://${localIp}:5173/medical/${qrProfile.secureToken}` : publicUrl;
+
     return res.status(201).json({
       success: true,
       message: 'QR code generated successfully!',
       qrProfile,
-      publicUrl: `${FRONTEND_URL}/medical/${qrProfile.secureToken}`,
+      publicUrl,
+      networkUrl,
+      localIp,
     });
   } catch (error) {
     next(error);
@@ -106,6 +140,7 @@ const regenerateQR = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const newToken = generateSecureQRToken();
+    const localIp = getLocalIp();
 
     const updated = await prisma.qRProfile.upsert({
       where: { userId },
@@ -120,11 +155,16 @@ const regenerateQR = async (req, res, next) => {
       },
     });
 
+    const publicUrl = `${FRONTEND_URL}/medical/${updated.secureToken}`;
+    const networkUrl = localIp ? `http://${localIp}:5173/medical/${updated.secureToken}` : publicUrl;
+
     return res.json({
       success: true,
       message: 'QR Code regenerated successfully. Previous QR codes are now revoked.',
       qrProfile: updated,
-      publicUrl: `${FRONTEND_URL}/medical/${updated.secureToken}`,
+      publicUrl,
+      networkUrl,
+      localIp,
     });
   } catch (error) {
     next(error);

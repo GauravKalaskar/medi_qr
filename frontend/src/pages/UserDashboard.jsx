@@ -207,9 +207,22 @@ const UserDashboard = () => {
             </div>
 
             <div className="py-2 flex justify-center">
-              {qrData?.publicUrl ? (
-                <div className="p-2 bg-slate-50 border border-slate-200 rounded-2xl shadow-inner">
-                  <QRCodeSVG value={qrData.publicUrl} size={100} level="M" />
+              {qrData?.secureToken || qrData?.publicUrl ? (
+                <div className="p-2 bg-white border border-slate-200 rounded-2xl shadow-sm">
+                  <QRCodeSVG
+                    value={
+                      (() => {
+                        const savedPublicDomain = localStorage.getItem('medsecure_public_url');
+                        if (savedPublicDomain && qrData?.secureToken) {
+                          return `${savedPublicDomain.replace(/\/+$/, '')}/medical/${qrData.secureToken}`;
+                        }
+                        return qrData?.networkUrl || (qrData?.secureToken ? `${window.location.origin}/medical/${qrData.secureToken}` : qrData.publicUrl);
+                      })()
+                    }
+                    size={110}
+                    level="M"
+                    includeMargin={true}
+                  />
                 </div>
               ) : (
                 <div className="w-24 h-24 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400">

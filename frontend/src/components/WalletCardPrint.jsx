@@ -51,12 +51,17 @@ const WalletCardPrint = ({ patientName, bloodGroup, qrUrl, emergencyContact, eme
           </div>
         </div>
 
-        {/* Right QR SVG Code */}
+        {/* Right QR Code with high-contrast quiet zone */}
         <div className="col-span-1 flex flex-col items-center justify-center">
-          <div className="p-1.5 bg-white border border-slate-300 rounded-lg shadow-sm">
-            <QRCodeSVG value={qrUrl || 'https://medsecureqr.org'} size={72} level="H" />
+          <div className="p-1 bg-white border border-slate-300 rounded-lg shadow-sm flex items-center justify-center">
+            <QRCodeSVG
+              value={qrUrl || 'https://medsecureqr.org'}
+              size={86}
+              level="M"
+              includeMargin={true}
+            />
           </div>
-          <span className="text-[8px] font-semibold text-slate-400 mt-1 uppercase tracking-tighter">Scan for Full Data</span>
+          <span className="text-[8px] font-bold text-slate-500 mt-1 uppercase tracking-tighter">Scan for Data</span>
         </div>
       </div>
 
