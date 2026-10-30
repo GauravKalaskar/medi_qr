@@ -58,8 +58,8 @@ const authRateLimiter = rateLimit({
   message: { success: false, message: 'Too many authentication attempts. Please try again in 15 minutes.' },
 });
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
+// Health check endpoints
+app.get(['/api/health', '/health'], (req, res) => {
   res.json({
     status: 'online',
     system: 'MedSecure QR API',
@@ -67,14 +67,14 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Mount Routes
-app.use('/api/auth', authRateLimiter, authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/medical-profile', medicalProfileRoutes);
-app.use('/api/qr', qrRoutes);
-app.use('/api/public', publicRoutes);
-app.use('/api/access-logs', accessLogRoutes);
-app.use('/api/admin', adminRoutes);
+// Mount Routes (accessible via both /api/* and root /*)
+app.use(['/api/auth', '/auth'], authRateLimiter, authRoutes);
+app.use(['/api/users', '/users'], userRoutes);
+app.use(['/api/medical-profile', '/medical-profile'], medicalProfileRoutes);
+app.use(['/api/qr', '/qr'], qrRoutes);
+app.use(['/api/public', '/public'], publicRoutes);
+app.use(['/api/access-logs', '/access-logs'], accessLogRoutes);
+app.use(['/api/admin', '/admin'], adminRoutes);
 
 // 404 Handler
 app.use((req, res) => {
