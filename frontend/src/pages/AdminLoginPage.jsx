@@ -62,13 +62,6 @@ const AdminLoginPage = () => {
               </div>
             )}
 
-            {/* Quick Demo Credentials Info */}
-            <div className="p-3 bg-slate-900/90 border border-slate-700 rounded-xl text-xs text-slate-300">
-              <span className="font-bold text-amber-400 block mb-1">🔑 Demo Admin Credentials:</span>
-              <p>Email: <code className="text-slate-100 bg-slate-800 px-1 py-0.5 rounded">admin@medsecure.com</code></p>
-              <p className="mt-0.5">Password: <code className="text-slate-100 bg-slate-800 px-1 py-0.5 rounded">Admin@123456</code></p>
-            </div>
-
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">
