@@ -9,12 +9,14 @@ const {
   deleteUser,
   getAccessLogs,
   getMedicalProfiles,
+  getAnalytics,
 } = require('../controllers/adminController');
 
 // All admin routes require token authentication AND admin role
 router.use(authenticateToken, requireAdmin);
 
 router.get('/dashboard', getDashboardStats);
+router.get('/analytics', getAnalytics);
 router.get('/users', getUsers);
 router.get('/users/:id', getUserById);
 router.patch('/users/:id/status', updateUserStatus);

@@ -13,6 +13,9 @@ import {
   ArrowRight,
   TrendingUp,
   FileText,
+  BarChart3,
+  Sparkles,
+  Droplet,
 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -61,20 +64,50 @@ const AdminDashboard = () => {
             </p>
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <Link
+              to="/admin/analytics"
+              className="px-4 py-2.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all flex items-center space-x-1.5"
+            >
+              <BarChart3 className="w-4 h-4" />
+              <span>Full Data Analysis</span>
+            </Link>
             <Link
               to="/admin/users"
-              className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs rounded-xl shadow-md transition-all"
+              className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl border border-slate-700 transition-all"
             >
               Manage Users Table
             </Link>
             <Link
               to="/admin/access-logs"
-              className="px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs rounded-xl transition-all"
+              className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl border border-slate-700 transition-all"
             >
               System Audit Logs
             </Link>
           </div>
+        </div>
+
+        {/* Prominent Data Analytics Intelligence Callout */}
+        <div className="bg-gradient-to-r from-amber-500/15 via-slate-800 to-purple-500/15 p-6 rounded-3xl border border-amber-400/30 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
+          <div className="space-y-1">
+            <div className="inline-flex items-center space-x-1.5 text-xs font-black text-amber-400 uppercase tracking-wider">
+              <Sparkles className="w-4 h-4" />
+              <span>Advanced Data Analytics Suite</span>
+            </div>
+            <h3 className="text-lg font-black text-white">
+              Clinical Epidemiological & Emergency Surveillance
+            </h3>
+            <p className="text-xs text-slate-300 max-w-xl">
+              Inspect comprehensive statistical distributions of blood group frequencies, universal donor reserves, chronic morbidity trends, anaphylaxis alerts, and 24-hour scan velocities.
+            </p>
+          </div>
+          <Link
+            to="/admin/analytics"
+            className="inline-flex items-center space-x-2 px-5 py-3 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-xs rounded-2xl shadow-lg shadow-amber-400/20 whitespace-nowrap transition-transform hover:scale-105"
+          >
+            <span>Launch Analytics Studio</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
 
         {/* Metric Cards Grid */}

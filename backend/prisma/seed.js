@@ -181,7 +181,199 @@ async function main() {
   });
 
   console.log(`✅ Demo Patient 2 initialized: ${user2.email} (QR Token: ${qr2.secureToken})`);
-  console.log('🎉 Seeding completed successfully!');
+
+  // 4. Demo Patient 3: Carlos Rodriguez (O- Universal Donor)
+  const user3PasswordHash = await bcrypt.hash('Patient@123456', 10);
+  const user3 = await prisma.user.upsert({
+    where: { email: 'carlos.rodriguez@example.com' },
+    update: {},
+    create: {
+      name: 'Carlos Alberto Rodriguez',
+      email: 'carlos.rodriguez@example.com',
+      mobile: '+1-555-234-5678',
+      passwordHash: user3PasswordHash,
+      role: 'USER',
+      dateOfBirth: '1982-06-14',
+      gender: 'Male',
+      isActive: true,
+    },
+  });
+
+  const profile3 = await prisma.medicalProfile.upsert({
+    where: { userId: user3.id },
+    update: {},
+    create: {
+      userId: user3.id,
+      bloodGroup: 'O-',
+      rhFactor: 'Negative',
+      address: '89 Mission St, San Francisco, CA 94105',
+      allergies: 'Peanut allergy, Tree nuts (Anaphylactic risk)',
+      medicalConditions: 'Mild Asthma, Seasonal Allergies',
+      chronicDiseases: 'Asthma',
+      previousSurgeries: 'Hernia Repair (2016)',
+      currentMedications: 'Albuterol HFA, Cetirizine 10mg',
+      previousMedications: 'None',
+      disabilityInfo: 'None',
+      emergencyContactName: 'Maria Rodriguez',
+      emergencyContactNumber: '+1-555-234-5679',
+      emergencyContactRelationship: 'Spouse',
+      preferredHospital: 'UCSF Medical Center',
+      primaryDoctor: 'Dr. Gregory House, MD',
+      doctorContact: '+1-555-876-5432',
+      height: '175 cm',
+      weight: '74 kg',
+      smokingStatus: 'Non-Smoker',
+      alcoholStatus: 'Occasional (Social)',
+      organDonorStatus: 'Yes',
+      insuranceProvider: 'BlueCross BlueShield',
+      insurancePolicyNumber: 'BCBS-11223344',
+      additionalNotes: 'Universal Blood Donor (O Negative). Carries Epinephrine Auto-Injector.',
+    },
+  });
+
+  const qr3 = await prisma.qRProfile.upsert({
+    where: { userId: user3.id },
+    update: {},
+    create: {
+      userId: user3.id,
+      secureToken: 'token_demo_carlos_rod_77123',
+      isActive: true,
+    },
+  });
+
+  // Access Logs for Carlos Rodriguez
+  await prisma.accessLog.createMany({
+    data: [
+      {
+        qrProfileId: qr3.id,
+        userAgent: 'Mozilla/5.0 (Linux; Android 13; SM-S908B) AppleWebKit/537.36 Chrome/114.0 Mobile Safari/537.36',
+        accessType: 'QR_SCAN',
+        ipAddress: '172.56.21.89',
+        metadata: JSON.stringify({ device: 'Android Chrome', context: 'EMS Ambulance Scanner' }),
+      },
+      {
+        qrProfileId: qr3.id,
+        userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1',
+        accessType: 'QR_SCAN',
+        ipAddress: '172.56.21.90',
+        metadata: JSON.stringify({ device: 'Mobile Safari', context: 'Emergency Room Admission' }),
+      },
+    ],
+  });
+
+  // 5. Demo Patient 4: Priya Sharma (B+ Diabetic)
+  const user4PasswordHash = await bcrypt.hash('Patient@123456', 10);
+  const user4 = await prisma.user.upsert({
+    where: { email: 'priya.sharma@example.com' },
+    update: {},
+    create: {
+      name: 'Dr. Priya Sharma',
+      email: 'priya.sharma@example.com',
+      mobile: '+1-555-345-6789',
+      passwordHash: user4PasswordHash,
+      role: 'USER',
+      dateOfBirth: '1993-03-21',
+      gender: 'Female',
+      isActive: true,
+    },
+  });
+
+  await prisma.medicalProfile.upsert({
+    where: { userId: user4.id },
+    update: {},
+    create: {
+      userId: user4.id,
+      bloodGroup: 'B+',
+      rhFactor: 'Positive',
+      address: '221B Baker St, London / Austin, TX 78701',
+      allergies: 'Penicillin, Amoxicillin (Severe hives)',
+      medicalConditions: 'Type 2 Diabetes, Hypothyroidism',
+      chronicDiseases: 'Type 2 Diabetes',
+      previousSurgeries: 'None',
+      currentMedications: 'Metformin 850mg twice daily, Levothyroxine 50mcg',
+      emergencyContactName: 'Raj Sharma',
+      emergencyContactNumber: '+1-555-345-6780',
+      emergencyContactRelationship: 'Father',
+      preferredHospital: 'St. David Medical Center',
+      primaryDoctor: 'Dr. Sanjay Gupta, MD',
+      doctorContact: '+1-555-901-2345',
+      height: '162 cm',
+      weight: '58 kg',
+      smokingStatus: 'Non-Smoker',
+      alcoholStatus: 'No',
+      organDonorStatus: 'Yes',
+      insuranceProvider: 'UnitedHealthcare',
+      insurancePolicyNumber: 'UHC-998877665',
+    },
+  });
+
+  const qr4 = await prisma.qRProfile.upsert({
+    where: { userId: user4.id },
+    update: {},
+    create: {
+      userId: user4.id,
+      secureToken: 'token_demo_priya_sharma_33912',
+      isActive: true,
+    },
+  });
+
+  await prisma.accessLog.create({
+    data: {
+      qrProfileId: qr4.id,
+      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0 Safari/537.36',
+      accessType: 'QR_SCAN',
+      ipAddress: '10.0.0.12',
+      metadata: JSON.stringify({ device: 'Hospital Workstation', department: 'ICU Triage' }),
+    },
+  });
+
+  // 6. Demo Patient 5: David Kim (A+ Senior Patient)
+  const user5PasswordHash = await bcrypt.hash('Patient@123456', 10);
+  const user5 = await prisma.user.upsert({
+    where: { email: 'david.kim@example.com' },
+    update: {},
+    create: {
+      name: 'David Sun-Woo Kim',
+      email: 'david.kim@example.com',
+      mobile: '+1-555-678-1234',
+      passwordHash: user5PasswordHash,
+      role: 'USER',
+      dateOfBirth: '1962-09-08',
+      gender: 'Male',
+      isActive: true,
+    },
+  });
+
+  await prisma.medicalProfile.upsert({
+    where: { userId: user5.id },
+    update: {},
+    create: {
+      userId: user5.id,
+      bloodGroup: 'A+',
+      rhFactor: 'Positive',
+      address: '450 North Michigan Ave, Chicago, IL 60611',
+      allergies: 'Aspirin, Ibuprofen, Contrast Dye',
+      medicalConditions: 'Coronary Artery Disease, Hypertension',
+      chronicDiseases: 'Hypertension, Cardiac',
+      previousSurgeries: 'Cardiac Stent Placement (2020)',
+      currentMedications: 'Atorvastatin 40mg, Clopidogrel 75mg, Metoprolol 25mg',
+      emergencyContactName: 'Grace Kim',
+      emergencyContactNumber: '+1-555-678-1235',
+      emergencyContactRelationship: 'Daughter',
+      preferredHospital: 'Northwestern Memorial Hospital',
+      primaryDoctor: 'Dr. Kevin Choi, MD',
+      doctorContact: '+1-555-432-1098',
+      height: '172 cm',
+      weight: '81 kg',
+      smokingStatus: 'Smoker (5-10/day)',
+      alcoholStatus: 'Moderate',
+      organDonorStatus: 'No',
+      insuranceProvider: 'Medicare',
+      insurancePolicyNumber: 'MEDICARE-66554433',
+    },
+  });
+
+  console.log('🎉 Extended medical cohort seeded successfully!');
 }
 
 main()

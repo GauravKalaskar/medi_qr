@@ -14,6 +14,7 @@ import {
   Activity,
   ChevronRight,
   Settings,
+  BarChart3,
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -128,6 +129,14 @@ const Navbar = () => {
                   }`}
                 >
                   Admin Overview
+                </Link>
+                <Link
+                  to="/admin/analytics"
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    isActive('/admin/analytics') ? 'bg-amber-400 text-slate-950 font-bold shadow-sm' : 'text-slate-700 hover:bg-slate-100'
+                  }`}
+                >
+                  Data Analytics
                 </Link>
                 <Link
                   to="/admin/users"
@@ -317,6 +326,14 @@ const Navbar = () => {
                 >
                   <Shield className="w-5 h-5 text-amber-400" />
                   <span>Admin Dashboard</span>
+                </Link>
+                <Link
+                  to="/admin/analytics"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center space-x-2 p-3 rounded-lg text-slate-700 hover:bg-slate-100 font-medium"
+                >
+                  <BarChart3 className="w-5 h-5 text-amber-500" />
+                  <span>Data Analytics</span>
                 </Link>
                 <Link
                   to="/admin/users"

@@ -26,6 +26,7 @@ import AccountSettingsPage from './pages/AccountSettingsPage';
 
 // Admin Protected Pages
 import AdminDashboard from './pages/AdminDashboard';
+import AdminAnalyticsPage from './pages/AdminAnalyticsPage';
 import AdminUsersPage from './pages/AdminUsersPage';
 import AdminMedicalProfilesPage from './pages/AdminMedicalProfilesPage';
 import AdminAccessLogsPage from './pages/AdminAccessLogsPage';
@@ -95,6 +96,14 @@ function App() {
             element={
               <AdminRoute>
                 <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/analytics"
+            element={
+              <AdminRoute>
+                <AdminAnalyticsPage />
               </AdminRoute>
             }
           />
